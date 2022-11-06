@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
 // Define a schema
 const Schema = mongoose.Schema;
 
 // Define user schema
-const UserSchema = new Schema({
+const userSchema = new Schema({
     firstName: {
         type: String,
         required: true,
@@ -15,7 +16,7 @@ const UserSchema = new Schema({
     },
     userName: {
         type: String,
-        unique: true
+        unique: true,
     },
     email: {
         type: String,
@@ -26,7 +27,26 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    created : {
+        type: Date,
+        default: Date.now
+    }
 });
 
-const UserModel = mongoose.model("Users", UserSchema);
-module.exports = UserModel;
+userSchema.pre("save", async function (next) {
+    const user = this;
+    const hash = await bcrypt.hash(this.password, 10);
+
+    this.password = hash;
+    next();
+});
+
+userSchema.methods.isValidPassword = async function (password) {
+    const user = this;
+    const compare = await bcrypt.compare(password, user.password);
+
+    return compare;
+};
+
+const userModel = mongoose.model("Users", userSchema);
+module.exports = userModel;
