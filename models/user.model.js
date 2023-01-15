@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // Define a schema
 const Schema = mongoose.Schema;
@@ -27,10 +27,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    created : {
+    created: {
         type: Date,
-        default: Date.now
-    }
+        default: Date.now,
+    },
 });
 
 userSchema.pre("save", async function (next) {

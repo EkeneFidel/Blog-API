@@ -1,5 +1,5 @@
 const { json } = require("body-parser");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const moment = require("moment");
 const articleModel = require("../models/article.model");
@@ -10,11 +10,7 @@ async function getArticlesByUser(req, res) {
     try {
         const { query } = req;
 
-        const {
-            state,
-            page = 0,
-            per_page = 20,
-        } = query;
+        const { state, page = 0, per_page = 20 } = query;
 
         const findQuery = {};
 
@@ -27,13 +23,14 @@ async function getArticlesByUser(req, res) {
             .equals(req.user)
             .skip(page)
             .limit(per_page);
-        res.status(200).json({
+        return res.status(200).json({
             type: "Success",
             article,
         });
     } catch (error) {
-        res.status(404).json({
-            type: "Error",
+        // console.log(error);
+        return res.status(404).json({
+            type: "error",
             message: "Unable to get articles",
         });
     }
@@ -57,12 +54,12 @@ async function getPublishedArticles(req, res) {
         const sortQuery = {};
 
         if (author) {
-            const user = await userModel.findOne({userName: author})
+            const user = await userModel.findOne({ userName: author });
             findQuery.author = user._id;
         }
 
         if (tags) {
-            const arr = tags.split(',');
+            const arr = tags.split(",");
             findQuery.tags = { $in: arr };
         }
 
@@ -96,8 +93,8 @@ async function getPublishedArticles(req, res) {
             articles,
         });
     } catch (error) {
-        res.status(404).json({
-            type: "Error",
+        return res.status(404).json({
+            type: "error",
             message: "Unable to get published articles",
         });
     }
@@ -112,20 +109,20 @@ async function postArticle(req, res) {
             (article.title.split.length + article.body.split.length) / 200
         );
         newArticle = await articleModel.create(article);
-        res.status(200).json({
+        return res.status(200).json({
             type: "Success",
             message: "Article posted successfully",
             newArticle,
         });
     } catch (error) {
         if (error.code === 11000) {
-            res.status(400).json({
-                type: "Error",
+            return res.status(400).json({
+                type: "error",
                 message: "Article with this title exists",
             });
         } else {
-            res.status(500).json({
-                type: "Error",
+            return res.status(500).json({
+                type: "error",
                 message: "Unable to post article",
             });
         }
@@ -137,27 +134,26 @@ async function getArticleById(req, res) {
     try {
         const article = await articleModel
             .findById({ _id: id })
-            .where('status')
-            .equals('Published')
+            .where("status")
+            .equals("Published")
             .populate("author", "-password");
-            
-        article.read_count++
-        article.save({ timestamps: false })
+
+        article.read_count++;
+        article.save({ timestamps: false });
         if (!article) {
             res.status(404).json({
-                type: "Error",
+                type: "error",
                 message: "Article not found",
             });
-        }
-        else{
+        } else {
             res.status(200).json({
                 type: "Success",
-                article
+                article,
             });
         }
     } catch (err) {
         res.status(404).json({
-            type: "Error",
+            type: "error",
             message: "Article not found",
         });
     }
@@ -171,33 +167,33 @@ async function updateArticle(req, res) {
 
         const articleToEdit = await articleModel.findById({ _id: id });
 
-        if (userId._id === articleToEdit.author.toString()) {
+        if (userId._id.toString() === articleToEdit.author.toString()) {
             try {
                 const updatedArticle = await articleModel.findOneAndUpdate(
                     { _id: id },
                     article,
                     { new: true }
                 );
-                res.status(200).json({
+                return res.status(200).json({
                     type: "success",
                     message: "Article updated successfully",
                     updatedArticle,
                 });
             } catch (error) {
-                res.status(500).json({
-                    type: "Error",
+                return res.status(500).json({
+                    type: "error",
                     message: "Something went wrong please try again",
                 });
             }
         } else {
-            res.status(401).json({
-                type: "Error",
-                message: "You are not allowed to edit pdate this article",
+            return res.status(401).json({
+                type: "error",
+                message: "You are not allowed to update this article",
             });
         }
     } catch (error) {
-        res.status(404).json({
-            type: "Error",
+        return res.status(404).json({
+            type: "error",
             message: "Article does not exist",
         });
     }
@@ -213,16 +209,16 @@ async function deleteArticle(req, res) {
 
         const articleTodelete = await articleModel.findById({ _id: id });
 
-        if (userId._id === articleTodelete.author.toString()) {
+        if (userId._id.toString() === articleTodelete.author.toString()) {
             const article = await articleModel.findOneAndRemove({ _id: id });
-            res.status(200).json({
+            return res.status(200).json({
                 type: "Success",
                 message: "Article Deleted",
             });
         }
     } catch (error) {
-        res.status(404).json({
-            type: "Error",
+        return res.status(404).json({
+            type: "error",
             message: "Article not found",
         });
     }
