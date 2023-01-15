@@ -1,7 +1,6 @@
 const { json } = require("body-parser");
 const jwt = require("jsonwebtoken");
 const express = require("express");
-const moment = require("moment");
 const articleModel = require("../models/article.model");
 const userModel = require("../models/user.model");
 require("dotenv").config();
