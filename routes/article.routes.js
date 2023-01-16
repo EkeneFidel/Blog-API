@@ -1,5 +1,4 @@
 const express = require("express");
-const passport = require("passport");
 const articleModel = require("../models/article.model");
 const articleController = require("../controllers/article.controller");
 const authentication = require("../middlewares/auth.middleware");
