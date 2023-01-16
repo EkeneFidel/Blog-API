@@ -5,7 +5,6 @@
   "scripts": {
     "test": "jest --detectOpenHandles",
     "start:dev": "nodemon app.js",
-    "vercel-build": "node ./app.js",
     "start:prod": "node app.js"
   },
   "author": "Ekene Chukwurah",
