@@ -107,7 +107,7 @@ async function postArticle(req, res) {
         article.reading_time = Math.ceil(
             (article.title.split.length + article.body.split.length) / 200
         );
-        newArticle = await articleModel.create(article);
+        const newArticle = await articleModel.create(article);
         return res.status(200).json({
             type: "Success",
             message: "Article posted successfully",
