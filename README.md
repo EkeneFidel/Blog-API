@@ -1,10 +1,12 @@
 # Blog-API
 
-Documentation https://documenter.getpostman.com/view/16637530/2s8YYJqhwg
+### Documentation
+https://documenter.getpostman.com/view/16637530/2s8YYJqhwg
 
-Live link https://blog-api-sandy.vercel.app/api/v1
+### Live link
+https://blog-api-sandy.vercel.app/api/v1
 
-# Setup
+### Setup
 
 -   Install NodeJS, mongodb
 -   pull this repo
